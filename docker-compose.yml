@@ -1,0 +1,16 @@
+version: "3"
+services:
+  v2ray-onekeyscript:
+    build:
+      context: .
+    # volumes:
+    # - ./config.json:/etc/v2ray/config.json:rw
+    # - ./233blog_v2ray_backup.conf:/etc/v2ray/233blog_v2ray_backup.conf:rw
+    # restart: always
+    networks: 
+      - v2ray
+    ports:
+      - "${PORT}:${PORT}"
+
+networks: 
+  v2ray:
