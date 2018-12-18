@@ -17,7 +17,8 @@ RUN v2ray start && v2ray info
 # RUN ln -sf /dev/stdout /var/log/v2ray/access.log \
 # 	&& ln -sf /dev/stderr /var/log/v2ray/error.log
 
-# CMD [ "/usr/local/sbin/v2ray", "log" ]
+COPY entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
 
 # ENTRYPOINT [ "/usr/local/sbin/v2ray", "start" ]
 
