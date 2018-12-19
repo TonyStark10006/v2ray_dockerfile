@@ -5,4 +5,4 @@ echo "[Entrypoint] v2ray one-click script"
 
 v2ray start
 v2ray info
-v2ray log
+tail -f /var/log/v2ray/access.log

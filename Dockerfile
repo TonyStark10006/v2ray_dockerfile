@@ -3,6 +3,9 @@ FROM ubuntu:18.04
 SHELL ["/bin/bash", "-c"]
 
 ARG TERM=xterm
+ARG PROTOCOL
+ARG PORT
+ARG ADBLOCK
 
 RUN apt-get update && apt-get install wget -y \
     && wget https://raw.githubusercontent.com/233boy/v2ray/master/install.sh && chmod +x install.sh \
@@ -18,6 +21,9 @@ RUN v2ray start && v2ray info
 # 	&& ln -sf /dev/stderr /var/log/v2ray/error.log
 
 COPY entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
+
 ENTRYPOINT ["/entrypoint.sh"]
 
 # ENTRYPOINT [ "/usr/local/sbin/v2ray", "start" ]

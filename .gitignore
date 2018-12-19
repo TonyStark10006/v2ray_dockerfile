@@ -1,3 +1,4 @@
 233blog_v2ray_backup.conf
 config.json
 .DS_Store
+.env

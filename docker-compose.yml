@@ -3,6 +3,10 @@ services:
   v2ray-onekeyscript:
     build:
       context: .
+      args:
+        PROTOCOL: ${PROTOCOL}
+        PORT: ${PORT}
+        ADBLOCK: ${ADBLOCK}
     # volumes:
     # - ./config.json:/etc/v2ray/config.json:rw
     # - ./233blog_v2ray_backup.conf:/etc/v2ray/233blog_v2ray_backup.conf:rw
