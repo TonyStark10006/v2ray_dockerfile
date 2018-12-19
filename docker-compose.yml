@@ -15,6 +15,7 @@ services:
       - v2ray
     ports:
       - "${PORT}:${PORT}"
+      - "${PORT}:${PORT}/udp"
 
 networks: 
   v2ray:
