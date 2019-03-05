@@ -42,17 +42,6 @@ class V2UserController implements V2UserInterface
         return ['item0', 'item1'];
     }
 
-    /**
-     * 测试接口
-     * @RequestMapping(route="test", method=RequestMethod::GET)
-     *
-     */
-    public function test() // string $user, int $type
-    {
-        return GRPCController::getStat(
-            GRPCController::init()->setStatRequest([3, '123@123.com', 2], false));
-    }
-
     public function getUser(string $id): array
     {
         // TODO: Implement getUser() method.

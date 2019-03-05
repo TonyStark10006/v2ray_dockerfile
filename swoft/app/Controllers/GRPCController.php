@@ -18,6 +18,7 @@ use Swoft\Http\Server\Bean\Annotation\RequestMethod;
 // use Swoft\View\Bean\Annotation\View;
 // use Swoft\Http\Message\Server\Response;
 
+use V2ray\Core\App\Stats\Command\QueryStatsRequest;
 use V2ray\Core\App\Stats\Command\StatsServiceClient;
 use V2ray\Core\App\Stats\Command\GetStatsRequest;
 
@@ -103,15 +104,17 @@ class GRPCController implements GRPCInterface
      * @param GetStatsRequest $request
      * @return array
      * 发送请求参数对象并解析响应内容
+     * 获取单个流向的流量
      */
     public static function getStat(GetStatsRequest $request) : array
     {
         self::start();
-        list($reply, $status) = self::$connection->GetStats($request);
+//        list($reply, $status) = self::$connection->GetStats($request);
+        $reply = (self::$connection->GetStats($request))[0];
         $name = explode('>>>', $reply->getStat()->getName());
         return [
             'name' => $name[1],
-            'value' => (string)round(($reply->getStat()->getValue()) / 1048576 ,3) . "MiB"
+            'value' => round(($reply->getStat()->getValue()) / 1048576 ,3)// . "MiB"
         ];
     }
 
@@ -132,4 +135,36 @@ class GRPCController implements GRPCInterface
         self::$connection->close();
         self::$connection = null;
     }
+
+    /**
+     * @param string $pattern
+     * @param bool $reset
+     * @return QueryStatsRequest
+     * 构造搜索查询参数对象
+     */
+    public static function setQueryStatRequest(string $pattern, bool $reset): QueryStatsRequest
+    {
+        return (new QueryStatsRequest())->setPattern($pattern)->setReset($reset);
+    }
+
+    /**
+     * @param QueryStatsRequest $request
+     * @return array
+     * 搜索指定用户的双向流量
+     */
+    public static function getQueryStat(QueryStatsRequest $request): array
+    {
+        self::start();
+//        list($reply, $status) = self::$connection->QueryStats($request);
+        $reply = (self::$connection->QueryStats($request))[0];
+
+        $items = array();
+        foreach ($reply->getStat() as $item) {
+            $name = (explode('>>>', $item->getName()));
+            $items[$name[1] . " - " . $name[3]] = round(($item->getValue()) / 1048576 ,3);// MiB为单位
+        }
+        return $items;
+    }
+
+
 }

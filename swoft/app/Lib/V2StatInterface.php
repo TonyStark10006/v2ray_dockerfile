@@ -8,16 +8,22 @@ namespace App\Lib;
 interface V2StatInterface
 {
     /**
-     * @param string $id
+     * @param string $name
      * @return array
      */
-    public function getUserDownlinkStat(string $id) : array ;
+    public function getUserDownlinkStat(string $name) : array ;
 
     /**
-     * @param string $id
+     * @param string $name
      * @return array
      */
-    public function getUserUplinkStat(string $id) : array ;
+    public function getUserUplinkStat(string $name) : array ;
+
+    /**
+     * @param string $name
+     * @return array
+     */
+    public function getUserLinkStat(string $name) : array ;
 
     /**
      * @return array
@@ -28,4 +34,9 @@ interface V2StatInterface
      * @return array
      */
     public function getUsersUplinkStat() : array ;
+
+    /**
+     * @return array
+     */
+    public function getUsersLinkStat() : array ;
 }

@@ -35,18 +35,46 @@ class V2StatController implements V2StatInterface
 
     }
 
-    /**
-     * @param string $id
-     * @return array
-     */
-    public function getUserDownlinkStat(string $id): array
-    {
 
+    /**
+     * 测试接口
+     * @RequestMapping(route="/v2ray/test", method=RequestMethod::GET)
+     *
+     */
+    public function test()
+    {
+        return self::getUserLinkStat('123');
+//        return GRPCController::getQueryStat(
+//            GRPCController::init()->setQueryStatRequest('123', false));
     }
 
-    public function getUserUplinkStat(string $id): array
+    public function getUserDownlinkStat(string $name): array
     {
-        // TODO: Implement getUserUplinkStat() method.
+        return GRPCController::getStat(
+            GRPCController::init()->setStatRequest([3, $name, 2], false));
+    }
+
+    public function getUserUplinkStat(string $name): array
+    {
+        return GRPCController::getStat(
+            GRPCController::init()->setStatRequest([3, $name, 1], false));
+    }
+
+    public function getUserLinkStat(string $name): array
+    {
+//        $stat = (float)substr(self::getUserDownlinkStat($name)[1], strlen(self::getUserDownlinkStat($name)[1]) - 3)
+//            + (float)substr(self::getUserUplinkStat($name)[1], strlen(self::getUserUplinkStat($name)[1]) - 3);
+        $stats = GRPCController::getQueryStat(
+            GRPCController::init()->setQueryStatRequest($name, false)
+        );
+        $stat = 0;
+        foreach ($stats as $item) {
+            $stat += $item;
+        }
+        return [
+            "name" => substr($key = array_keys($stats)[0], 0, strlen($key) - 9),
+            "value" => $stat . "MiB"
+        ];
     }
 
     public function getUsersDownlinkStat(): array
@@ -58,4 +86,11 @@ class V2StatController implements V2StatInterface
     {
         // TODO: Implement getUsersUplinkStat() method.
     }
+
+    public function getUsersLinkStat(): array
+    {
+        // TODO: Implement getUsersLinkStat() method.
+    }
+
+
 }
