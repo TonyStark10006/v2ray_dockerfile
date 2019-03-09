@@ -19,17 +19,26 @@ use Swoft\Http\Server\Bean\Annotation\RequestMethod;
 
 /**
  * Class V2StatController
- * @Controller(prefix="/v2Stat")
+ * @Controller(prefix="/stat")
  * @package App\Controllers
  */
 class V2StatController implements V2StatInterface
 {
     /**
-     * this is a example action. access uri path: /v2Stat
-     * @RequestMapping(route="/v2Stat", method=RequestMethod::GET)
+     * @RequestMapping(route="user/{type}/{direction}/{name}", method=RequestMethod::GET)
      * @return array
      */
-    public function index(): array
+    public function user(): array
+    {
+        return ['item0' => 0, 'item1' => 1, 'item2' => 2, 'item3' => 3];
+
+    }
+
+    /**
+     * @RequestMapping(route="users/{name}", method=RequestMethod::GET)
+     * @return array
+     */
+    public function users(): array
     {
         return ['item0' => 0, 'item1' => 1, 'item2' => 2, 'item3' => 3];
 
@@ -43,7 +52,7 @@ class V2StatController implements V2StatInterface
      */
     public function test()
     {
-        return self::getUserLinkStat('123');
+        return self::getUsersLinkStat('proxy');
 //        return GRPCController::getQueryStat(
 //            GRPCController::init()->setQueryStatRequest('123', false));
     }
@@ -73,23 +82,35 @@ class V2StatController implements V2StatInterface
         }
         return [
             "name" => substr($key = array_keys($stats)[0], 0, strlen($key) - 9),
-            "value" => $stat . "MiB"
+            "value" => $stat// . "MiB"
         ];
     }
 
-    public function getUsersDownlinkStat(): array
+    public function getUsersDownlinkStat(string $proxy): array
     {
-        // TODO: Implement getUsersDownlinkStat() method.
+        return GRPCController::getStat(
+            GRPCController::init()->setStatRequest([3, $proxy, 2], false));
     }
 
-    public function getUsersUplinkStat(): array
+    public function getUsersUplinkStat(string $proxy): array
     {
-        // TODO: Implement getUsersUplinkStat() method.
+        return GRPCController::getStat(
+            GRPCController::init()->setStatRequest([3, $proxy, 2], false));
     }
 
-    public function getUsersLinkStat(): array
+    public function getUsersLinkStat(string $proxy): array
     {
-        // TODO: Implement getUsersLinkStat() method.
+        $stats = GRPCController::getQueryStat(
+            GRPCController::init()->setQueryStatRequest($proxy, false)
+        );
+        $stat = 0;
+        foreach ($stats as $item) {
+            $stat += $item;
+        }
+        return [
+            "name" => substr($key = array_keys($stats)[0], 0, strlen($key) - 9),
+            "value" => $stat// . "MiB"
+        ];
     }
 
 
